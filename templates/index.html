@@ -7,10 +7,87 @@
   <meta name="description" content="{{ data.owner.bio }}">
 </head>
 <body>
-  <main>
+{% set has_skills = data.skills %}
+{% set has_projects = data.projects %}
+{% set has_experience = data.experience %}
+<header>
+  <nav aria-label="Sections">
+    <a href="#hero">{{ data.owner.name }}</a>
+    {% if has_skills %}<a href="#tech">Tech</a>{% endif %}
+    {% if has_projects %}<a href="#projects">Projects</a>{% endif %}
+    {% if has_experience %}<a href="#experience">Experience</a>{% endif %}
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+<main>
+  <section id="hero">
     <h1>{{ data.owner.name }}</h1>
-    <p>{{ data.owner.title }}</p>
+    <p class="title">{{ data.owner.title }}</p>
     <p>{{ data.owner.bio }}</p>
-  </main>
+    {% for link in data.social_links or [] %}
+    <a href="{{ link.url }}">{{ link.label }}</a>
+    {% endfor %}
+  </section>
+
+  {% if has_skills %}
+  <section id="tech">
+    <h2>Tech Stack</h2>
+    {% for category, items in data.skills.items() %}
+    <div class="skill-group">
+      <h3>{{ category }}</h3>
+      <ul>
+        {% for item in items %}<li>{{ item }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if has_projects %}
+  <section id="projects">
+    <h2>Projects</h2>
+    {% for project in data.projects %}
+    {% set src = image_src(project.image_url) %}
+    <article class="project">
+      {% if src %}
+      <img src="{{ src }}" alt="{{ project.title }}">
+      {% else %}
+      <div class="project-placeholder" role="img" aria-label="{{ project.title }}"></div>
+      {% endif %}
+      <h3>{{ project.title }}</h3>
+      <p>{{ project.description }}</p>
+      {% if project.tech_stack %}
+      <ul class="tech-badges">
+        {% for tech in project.tech_stack %}<li>{{ tech }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+      {% if project.demo_link %}<a href="{{ project.demo_link }}">Demo</a>{% endif %}
+      {% if project.code_link %}<a href="{{ project.code_link }}">Code</a>{% endif %}
+    </article>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if has_experience %}
+  <section id="experience">
+    <h2>Experience</h2>
+    {% for job in data.experience %}
+    <article class="job">
+      <h3>{{ job.role }}</h3>
+      <p>{{ job.company }} <span class="dates">{{ job.dates }}</span></p>
+      {% if job.highlights %}
+      <ul>
+        {% for point in job.highlights %}<li>{{ point }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </section>
+  {% endif %}
+</main>
+<footer id="contact">
+  <p><a href="mailto:{{ data.owner.email }}">{{ data.owner.email }}</a></p>
+  <p>(c) {{ year }} {{ data.owner.name }}</p>
+</footer>
 </body>
 </html>

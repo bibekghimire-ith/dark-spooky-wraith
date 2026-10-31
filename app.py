@@ -160,7 +160,7 @@ PORTFOLIO_DATA = {
 import os
 from datetime import date
 
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 
 ALLOWED_LINK_PREFIXES = ("http://", "https://", "mailto:")
 REQUIRED_OWNER_FIELDS = ("name", "title", "bio", "email")
@@ -223,6 +223,27 @@ def validate(data):
     return errors
 
 
+def image_src(value):
+    """Return a safe image URL for a project, or None when there is nothing usable.
+
+    Hosted http(s) URLs pass through. Anything else is treated as a path
+    inside static/ and must not climb out of it or use another scheme.
+    """
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    if not value:
+        return None
+    if value.lower().startswith(("http://", "https://")):
+        return value
+    if ":" in value or "\\" in value:
+        return None
+    parts = [p for p in value.split("/") if p]
+    if not parts or ".." in parts:
+        return None
+    return url_for("static", filename="/".join(parts))
+
+
 def create_app(data=None):
     """Build the Flask app. Bad data stops startup with a message naming the field."""
     data = PORTFOLIO_DATA if data is None else data
@@ -231,6 +252,7 @@ def create_app(data=None):
         raise ValueError("Invalid PORTFOLIO_DATA:\n- " + "\n- ".join(errors))
 
     app = Flask(__name__)
+    app.jinja_env.globals["image_src"] = image_src
 
     @app.route("/")
     def index():

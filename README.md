@@ -25,4 +25,4 @@ python -m pytest
 
 ## Status
 
-Phase 1 (scaffold and data) is done: the app starts, validates its data, and renders the owner name, title and bio. Sections, styling, hardening and deployment follow the plan in `Portfolio-Implementation-Plan.md`.
+Phases 1 and 2 are done: the app validates its data and renders hero, tech stack, projects, experience and footer from it (unstyled; Bootstrap and the retro theme arrive in Phase 3). Sections, styling, hardening and deployment follow the plan in `Portfolio-Implementation-Plan.md`.
