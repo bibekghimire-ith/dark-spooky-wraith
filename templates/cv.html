@@ -6,7 +6,7 @@
 {% block footer %}{% endblock %}
 {% block main %}
 <div class="container narrow page-section">
-  <p class="no-print cv-actions"><a href="/">&larr; Back to site</a> <button type="button" class="btn btn-sm" onclick="window.print()">Print / save as PDF</button></p>
+  <p class="no-print cv-actions"><a href="{{ url_for('index') }}">&larr; Back to site</a> <button type="button" class="btn btn-sm" onclick="window.print()">Print / save as PDF</button></p>
   <header class="cv-head">
     <h1>{{ data.owner.name }}</h1>
     <p class="title">{{ data.owner.title }}{% if data.owner.location %} &middot; {{ data.owner.location }}{% endif %}</p>

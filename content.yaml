@@ -1,17 +1,25 @@
 # Portfolio content. Edit this file to change any text, link or image.
 # Tip: quote values that could be read as numbers, dates or booleans (for example "2024").
-# Fields: see the docstring at the top of app.py.
+# Fields: see the docstring at the top of app.py. Facts come from docs/CV_LP.pdf.
+# TODO: replace the placeholder email and social links with the ones in your CV.
+# TODO: add one real number to your current role's ingestion bullet (events per day, sources, latency).
+# Availability badge: set owner.availability to text, or {text, status: open|limited|closed}. Remove it to hide the badge.
+# Writing: link dev.to posts by hand (writing.links) or set writing.devto_username to import them at startup.
+# Experience: the newest experience_visible roles are expanded; older ones sit under "Earlier roles". 0 shows all.
+# Projects: featured: true gives a project the wide card. case_study copy is dummy text built from CV facts: rewrite it in your words
+# (and add the accuracy you reached to the Traffic Sign case study: result).
 owner:
   name: Bibek Ghimire
   title: Software Engineer
-  bio: I build backend services and data ingestion pipelines for a SIEM platform. I came up through QA
-    and test automation, so I design for reliability, testability and clear documentation from the first
-    commit.
+  bio: Software engineer building backend services, APIs and data pipelines. I care about reliable, secure
+    and well-documented systems, and I work closely with product and engineering teams.
   email: your-email@example.com
   location: Nepal
-  availability: Open to new backend and platform roles  # dummy: edit or remove
+  availability:
+    text: Open to new backend and platform roles
+    status: open
   cta_title: Let's build something reliable.
-  cta: Open to conversations about backend services, data ingestion and test automation.
+  cta: Open to conversations about backend services, data pipelines and integrations.
 social_links:
 - label: GitHub
   url: https://github.com/your-handle
@@ -31,19 +39,29 @@ skills:
   - JWT
   - OAuth
   - Input validation
-  Testing and QA:
-  - Playwright (Python)
+  Data and SIEM:
+  - SIEM
+  - SOAR and UEBA content
+  - Data ingestion
+  - Log parsing and normalization
+  - Regex
+  - MongoDB
+  - SQLite
+  Testing tools:
+  - Playwright
   - Postman
   - Cucumber
   - RestAssured
   - JMeter (basic)
   - Xray
-  - Test strategy
+  Practices:
+  - Test planning and automation
+  - API testing
   - Regression testing
-  Data:
-  - MongoDB
-  - SQLite
-  - Regex log parsing
+  - Performance testing
+  - Security testing
+  - Root cause analysis
+  - Agile
   Tools and platforms:
   - Git
   - Docker
@@ -64,6 +82,14 @@ projects:
   image_url: img/log-parser-tool.png
   demo_link: ''
   code_link: ''
+  case_study:
+    problem: Every parser change had to be re-checked by hand across analytics content, queries and application
+      bundles.
+    role: Designed and built the tool as an internal project.
+    approach: Automated regression runs for log parsers, query validation of analytics content and application
+      bundle verification.
+    result: Cut manual testing time by 50%.
+  featured: true
 - title: Playwright Test Automation Framework
   description: Standardized API and end-to-end automation framework for internal web applications and
     SIEM plugin integrations, and streamlined QA procedures across teams.
@@ -75,6 +101,12 @@ projects:
   image_url: img/playwright-framework.png
   demo_link: ''
   code_link: ''
+  case_study:
+    problem: Web applications and plugin integrations needed one consistent way to be tested.
+    role: Standardized the API and end-to-end automation framework.
+    approach: A shared Playwright framework covering API and end-to-end tests for internal web applications
+      and SIEM plugins.
+    result: Streamlined QA procedures and improved efficiency across teams.
 - title: BDD API Automation Framework
   description: API test framework for a microservices-based lending platform, using a BDD approach so
     component tests are readable by stakeholders.
@@ -86,6 +118,12 @@ projects:
   image_url: img/bdd-api-framework.png
   demo_link: ''
   code_link: ''
+  case_study:
+    problem: Component-level tests for a microservices lending platform had to be understandable beyond
+      the engineers writing them.
+    role: Implemented the API automation framework.
+    approach: BDD scenarios written with Cucumber and executed against the services with RestAssured.
+    result: Streamlined component-level testing and improved collaboration with stakeholders.
 - title: Traffic Sign Recognition
   description: 'Master''s project: a multilayer perceptron written from scratch in NumPy to classify traffic
     signs from the GTSRB dataset.'
@@ -97,16 +135,25 @@ projects:
   image_url: img/traffic-sign.png
   demo_link: ''
   code_link: https://github.com/your-handle/TrafficSignDetection
+  case_study:
+    problem: Classify traffic signs from the GTSRB dataset.
+    role: Solo Master's project.
+    approach: A multilayer perceptron written from scratch in NumPy, without a machine learning framework.
 experience:
 - role: Software Engineer
   company: Logpoint, Nepal
   dates: May 2025 - Present
   highlights:
-  - Develop and maintain scalable backend services in Python (Flask), with RESTful APIs and third-party
-    integrations.
-  - Implement authentication, authorization and security practices (JWT, OAuth, input validation) for
-    secure API communication.
-  - Build and optimize data ingestion components for the SIEM platform.
+  - Build and maintain scalable Python (Flask) backend services and REST APIs, including third-party integrations,
+    for a SIEM platform.
+  - Secure API communication with JWT, OAuth and input validation.
+  - Build and optimize the data ingestion components that feed the SIEM platform.
+  tech:
+  - Python
+  - Flask
+  - REST APIs
+  - JWT
+  - OAuth
 - role: Quality Assurance Engineer
   company: Foneloan Pvt. Ltd., Nepal
   dates: Oct 2024 - Apr 2025
@@ -116,29 +163,48 @@ experience:
   - Built an API automation framework with a BDD approach (Cucumber, RestAssured) for component-level
     testing.
   - Ran functional, API and database validation across services, working with product managers and developers.
+  tech:
+  - Cucumber
+  - RestAssured
+  - BDD
+  - API testing
 - role: Quality Assurance Engineer
   company: Logpoint, Nepal
   dates: May 2023 - May 2024
   highlights:
-  - Defined the QA strategy for feature and release sign-offs; wrote and reviewed test plans and test
-    cases.
+  - Defined the QA strategy and release sign-off criteria; wrote and reviewed test plans and test cases.
   - Automated API and end-to-end tests for internal web applications and SIEM plugin integrations.
-  - Standardized the API and Playwright automation frameworks and streamlined QA procedures.
+  - Worked with developers and product management across teams on the AgentX (Wazuh) integration with
+    the SIEM platform.
+  - Standardized the API and Playwright (Python) automation frameworks and streamlined QA procedures across
+    teams.
   - Mentored junior QA engineers on testing practices and tools.
+  tech:
+  - Playwright
+  - API testing
+  - SIEM
 - role: Associate Quality Assurance Engineer
   company: Logpoint, Nepal
   dates: Aug 2021 - Apr 2023
   highlights:
   - Wrote test cases and test data from requirement documents; tracked defects with the development team.
-  - Developed and optimized regex-based log parsers for faster, more reliable log interpretation.
+  - Developed and optimized regex-based log parsers, making log interpretation faster and more reliable.
   - Built an internal tool that automated parser regression tests, query validation and bundle verification,
     cutting manual testing time by 50%.
   - Created and verified analytics content for SIEM, SOAR and UEBA platforms.
+  tech:
+  - Regex
+  - Log parsing
+  - SIEM
+  - SOAR
+  - UEBA
 - role: Technical Writer
   company: Entegra Sources Pvt. Ltd.
   dates: Mar 2020 - Aug 2021
   highlights:
   - Wrote and reviewed customer engineering documentation with a focus on clarity and precision.
+  tech:
+  - Technical documentation
 education:
 - degree: Bachelor's Degree in Electronics and Communication Engineering
   school: Eastern Region Campus, Institute of Engineering, Tribhuvan University
@@ -150,28 +216,37 @@ certifications:
 - name: Certified Tester Foundation Level (CTFL)
   issuer: ISTQB
   date: Sep 2022
-# Home page extras (all optional; remove a key to hide its section).
 hero_console:
 - $ whoami
 - bibek - software engineer, backend and data ingestion
 - $ tail career.log
 - '2020  technical writer: documentation with precision'
 - '2021  QA engineer: regex log parsers, parser regression tool'
-- '2023  QA strategy and release sign-off, mentoring'
+- 2023  QA strategy and release sign-off, mentoring
 - '2025  software engineer: Flask APIs, JWT/OAuth, ingestion'
 stats:
-- value: 6+
+- value: 5+
   label: years in software
 - value: 50%
-  label: less manual testing via an internal tool
+  label: less manual effort through internal tooling
 - value: '3'
-  label: companies, from docs to backend
+  label: companies and teams
 - value: '2'
-  label: certifications (ISTQB, PCAP)
+  label: professional certifications
 focus:
-- title: Backend and ingestion
-  text: Python and Flask services, REST APIs and the data ingestion components behind a SIEM platform.
-- title: Quality by design
-  text: Test strategy, Playwright and BDD frameworks and regression tooling, built in from the first commit.
-- title: Secure and documented
-  text: JWT, OAuth and input validation for APIs, plus the clear documentation that makes systems maintainable.
+- title: Backend and APIs
+  text: Services and APIs with authentication, authorization and input validation, built for secure integrations.
+- title: Data pipelines
+  text: Ingestion and parsing components that turn raw log data into reliable, usable information.
+- title: Quality and documentation
+  text: Automated testing, clear documentation and close collaboration so systems stay stable as they
+    grow.
+writing:
+  devto_username: ''
+  links:
+  - title: 'Example: my first dev.to post (replace me)'
+    url: https://dev.to/your-username/your-post-slug
+    date: '2026-10-01'
+    summary: Dummy entry. Replace with a real post or delete the links list.
+    source: dev.to
+experience_visible: 3

@@ -1,2 +1,12 @@
 {# External links open in a new tab and never leak the opener. #}
 {% macro ext(url) %}{% if url.startswith(('http://', 'https://')) %} target="_blank" rel="noopener noreferrer"{% endif %}{% endmacro %}
+
+{# One writing entry: a local post or a link to a post published elsewhere. #}
+{% macro writing_card(item, heading="h3") %}
+{% set href = item.href if item.external else url_for('blog.blog_post', slug=item.slug) %}
+<article class="card">
+  <p class="meta">{% if item.date %}{{ item.date.isoformat() }}{% endif %}{% if item.source %}{% if item.date %} &middot; {% endif %}<span class="tag">{{ item.source }}</span>{% endif %}</p>
+  <{{ heading }}><a href="{{ href }}"{{ ext(href) }}>{{ item.title }}{% if item.external %} <span aria-hidden="true">&#8599;</span><span class="visually-hidden">(opens in a new tab)</span>{% endif %}</a></{{ heading }}>
+  {% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
+</article>
+{% endmacro %}

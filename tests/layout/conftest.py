@@ -21,6 +21,8 @@ def server(request):
     from tests.test_home_components import extras
 
     data = extras(copy.deepcopy(FULL_DATA))
+    data["experience"][0]["tech"] = ["Alpha", "Beta", "Gamma"]
+    data["projects"][0]["case_study"] = {"problem": "Problem text.", "result": "Result text."}
     data["education"] = [{"degree": "BSc Test", "school": "Test Uni", "dates": "2010 - 2014"}]
     # three projects so the 3-column case is meaningful
     data["projects"].append({"title": "Gamma Project", "description": "Third.", "tech_stack": ["C"]})

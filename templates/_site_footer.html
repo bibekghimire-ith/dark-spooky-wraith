@@ -2,7 +2,7 @@
   <div class="container footer-inner">
     <p>(c) {{ year }} {{ data.owner.name }}</p>
     <p><a href="mailto:{{ data.owner.email }}">{{ data.owner.email }}</a></p>
-    <p><a href="/cv">CV (print view)</a></p>
+    {% if not single_page %}<p><a href="{{ url_for('cv') }}">CV (print view)</a></p>{% endif %}
     <p class="footer-top"><a href="#main">Back to top</a></p>
   </div>
 </footer>

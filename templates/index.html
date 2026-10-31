@@ -1,19 +1,22 @@
 {% extends "base.html" %}
-{% from "_macros.html" import ext %}
+{% from "_macros.html" import ext, writing_card %}
 {% set page_title = data.owner.name ~ " - " ~ data.owner.title %}
 {% set page_desc = data.owner.bio %}
 {% block main %}
 <div class="container">
+  {% set ns = namespace(n=0) %}
 
   <section id="hero" class="hero">
     <div class="hero-copy">
-      {% if data.owner.availability %}<p class="status"><span class="dot" aria-hidden="true"></span>{{ data.owner.availability }}</p>{% endif %}
+      {% set av = data.owner.availability %}
+      {% if av %}{% set av_text = av if av is string else av.text %}{% set av_status = 'open' if av is string else (av.status or 'open') %}
+      <p class="status status-{{ av_status }}"><span class="dot" aria-hidden="true"></span>{{ av_text }}</p>{% endif %}
       <p class="eyebrow">{{ data.owner.title }}{% if data.owner.location %} &middot; {{ data.owner.location }}{% endif %}</p>
       <h1>{{ data.owner.name }}</h1>
       <p class="lead">{{ data.owner.bio }}</p>
       <div class="cta-row">
-        {% if data.projects %}<a class="btn" href="#projects">View projects</a>{% endif %}
-        <a class="btn btn-ghost" href="/cv">View CV</a>
+        {% if data.experience %}<a class="btn" href="#experience">View experience</a>{% endif %}
+        {% if not single_page %}<a class="btn btn-ghost" href="{{ url_for('cv') }}">View CV</a>{% endif %}
         {% for link in data.social_links or [] %}
         <a class="btn btn-ghost" href="{{ link.url }}"{{ ext(link.url) }}>{{ link.label }}</a>
         {% endfor %}
@@ -37,8 +40,9 @@
   {% endif %}
 
   {% if data.focus %}
+  {% set ns.n = ns.n + 1 %}
   <section id="about" class="page-section">
-    <header class="section-head"><p class="eyebrow">01 / About</p><h2>What I do</h2></header>
+    <header class="section-head"><p class="eyebrow">{{ "%02d"|format(ns.n) }} / About</p><h2>What I do</h2></header>
     <div class="grid grid-3">
       {% for item in data.focus %}
       <article class="card"><h3>{{ item.title }}</h3><p>{{ item.text }}</p></article>
@@ -47,37 +51,68 @@
   </section>
   {% endif %}
 
-  {% if data.skills %}
-  <section id="tech" class="page-section">
-    <header class="section-head"><p class="eyebrow">02 / Toolbox</p><h2>Tech Stack</h2></header>
-    <div class="grid grid-2">
-      {% for category, items in data.skills.items() %}
-      <div class="card">
-        <h3>{{ category }}</h3>
-        <ul class="chip-list">
-          {% for item in items %}<li>{{ item }}</li>{% endfor %}
+  {% if data.experience %}
+  {% set visible = data.experience_visible if data.experience_visible is number else 3 %}
+  {% set shown = data.experience if visible < 1 else data.experience[:visible] %}
+  {% set earlier = [] if visible < 1 else data.experience[visible:] %}
+  {% set ns.n = ns.n + 1 %}
+  <section id="experience" class="page-section">
+    <header class="section-head"><p class="eyebrow">{{ "%02d"|format(ns.n) }} / Career</p><h2>Experience</h2></header>
+    {% macro job_card(job) %}
+      <li class="job">
+        <div class="job-head">
+          <h3>{{ job.role }}</h3>
+          <p class="dates">{{ job.dates }}{% if 'present' in (job.dates|string)|lower %} <span class="tag">current</span>{% endif %}</p>
+        </div>
+        <p class="company">{{ job.company }}</p>
+        {% if job.highlights %}
+        <ul>
+          {% for point in job.highlights %}<li>{{ point }}</li>{% endfor %}
         </ul>
-      </div>
-      {% endfor %}
-    </div>
+        {% endif %}
+        {% if job.tech %}
+        <ul class="chip-list" aria-label="Technologies used">
+          {% for tech in job.tech %}<li>{{ tech }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+      </li>
+    {% endmacro %}
+    <ol class="timeline">
+      {% for job in shown %}{{ job_card(job) }}{% endfor %}
+    </ol>
+    {% if earlier %}
+    <details class="earlier">
+      <summary>Earlier roles ({{ earlier|length }})</summary>
+      <ol class="timeline">
+        {% for job in earlier %}{{ job_card(job) }}{% endfor %}
+      </ol>
+    </details>
+    {% endif %}
+    {% if not single_page %}<p class="section-link"><a href="{{ url_for('cv') }}">View full CV &rarr;</a></p>{% endif %}
   </section>
   {% endif %}
 
   {% if data.projects %}
+  {% set ns.n = ns.n + 1 %}
   <section id="projects" class="page-section">
-    <header class="section-head"><p class="eyebrow">03 / Work</p><h2>Projects</h2></header>
+    <header class="section-head"><p class="eyebrow">{{ "%02d"|format(ns.n) }} / Work</p><h2>Projects</h2></header>
+    {% set rest = data.projects|rejectattr('featured')|list|length %}
     <div class="project-grid">
       {% for project in data.projects %}
       {% set src = image_src(project.image_url) %}
-      <article class="project card">
+      {% set cs = project.case_study if project.case_study is mapping else {} %}
+      {% set diagram = image_src(cs.diagram) %}
+      {% set has_case = cs.problem or cs.role or cs.approach or cs.result or diagram %}
+      <article class="project card{% if project.featured %} featured{% elif loop.last and rest is odd %} span-2{% endif %}">
         <div class="thumb">
           {% if src %}
           <img src="{{ src }}" alt="{{ project.title }}" width="640" height="360" loading="lazy" decoding="async">
           {% else %}
-          <div class="project-placeholder" role="img" aria-label="{{ project.title }}"><span aria-hidden="true">{{ '%02d' % loop.index }} / {{ (project.tech_stack or ['project'])[0]|lower }}</span></div>
+          <div class="project-placeholder" role="img" aria-label="{{ project.title }}"><span aria-hidden="true">{{ '%02d'|format(loop.index) }} / {{ (project.tech_stack or ['project'])[0]|lower }}</span></div>
           {% endif %}
         </div>
         <div class="project-body">
+          {% if project.featured %}<p class="tag">featured</p>{% endif %}
           <h3>{{ project.title }}</h3>
           {% if project.impact %}<p class="impact">{{ project.impact }}</p>{% endif %}
           <p>{{ project.description }}</p>
@@ -85,6 +120,19 @@
           <ul class="chip-list">
             {% for tech in project.tech_stack %}<li>{{ tech }}</li>{% endfor %}
           </ul>
+          {% endif %}
+          {% if has_case %}
+          <details class="case-study" id="case-{{ slug(project.title) }}">
+            <summary>Read the case study</summary>
+            <dl>
+              {% for key, label in [('problem', 'Problem'), ('role', 'My role'), ('approach', 'Approach'), ('result', 'Result')] %}
+              {% if cs[key] %}<dt>{{ label }}</dt><dd>{{ cs[key] }}</dd>{% endif %}
+              {% endfor %}
+            </dl>
+            {% if diagram %}
+            <figure><img src="{{ diagram }}" alt="{{ cs.diagram_alt or (project.title ~ ' diagram') }}" width="640" height="360" loading="lazy" decoding="async"></figure>
+            {% endif %}
+          </details>
           {% endif %}
           {% if project.demo_link or project.code_link %}
           <div class="links">
@@ -99,55 +147,58 @@
   </section>
   {% endif %}
 
-  {% if data.experience %}
-  <section id="experience" class="page-section">
-    <header class="section-head"><p class="eyebrow">04 / Career</p><h2>Experience</h2></header>
-    <ol class="timeline">
-      {% for job in data.experience %}
-      <li class="job">
-        <div class="job-head">
-          <h3>{{ job.role }}</h3>
-          <p class="dates">{{ job.dates }}{% if 'present' in (job.dates|string)|lower %} <span class="tag">current</span>{% endif %}</p>
-        </div>
-        <p class="company">{{ job.company }}</p>
-        {% if job.highlights %}
-        <ul>
-          {% for point in job.highlights %}<li>{{ point }}</li>{% endfor %}
+  {% if data.skills %}
+  {% set ns.n = ns.n + 1 %}
+  <section id="tech" class="page-section">
+    <header class="section-head"><p class="eyebrow">{{ "%02d"|format(ns.n) }} / Toolbox</p><h2>Tech Stack</h2></header>
+    <div class="grid grid-2">
+      {% for category, items in data.skills.items() %}
+      <div class="card">
+        <h3>{{ category }}</h3>
+        <ul class="chip-list">
+          {% for item in items %}<li>{{ item }}</li>{% endfor %}
         </ul>
-        {% endif %}
-      </li>
+      </div>
       {% endfor %}
-    </ol>
+    </div>
   </section>
   {% endif %}
 
   {% if data.education or data.certifications %}
+  {% set ns.n = ns.n + 1 %}
   <section id="credentials" class="page-section">
-    <header class="section-head"><p class="eyebrow">05 / Credentials</p><h2>Education &amp; certifications</h2></header>
-    <div class="grid grid-2">
-      {% for item in data.education or [] %}
-      <article class="card"><p class="meta">{{ item.dates }}</p><h3>{{ item.degree }}</h3><p>{{ item.school }}</p></article>
-      {% endfor %}
-      {% for item in data.certifications or [] %}
-      <article class="card"><p class="meta">{{ item.date }}</p><h3>{{ item.name }}</h3><p>{{ item.issuer }}</p></article>
-      {% endfor %}
+    <header class="section-head"><p class="eyebrow">{{ "%02d"|format(ns.n) }} / Credentials</p><h2>Education &amp; certifications</h2></header>
+    <div class="card credentials">
+      {% if data.education %}
+      <div>
+        <h3>Education</h3>
+        <ul class="plain-list">
+          {% for item in data.education %}<li><strong>{{ item.degree }}</strong><br>{{ item.school }}<br><span class="meta">{{ item.dates }}</span></li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% if data.certifications %}
+      <div>
+        <h3>Certifications</h3>
+        <ul class="plain-list">
+          {% for item in data.certifications %}<li><strong>{{ item.name }}</strong><br>{{ item.issuer }}{% if item.date %}<br><span class="meta">{{ item.date }}</span>{% endif %}</li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
     </div>
   </section>
   {% endif %}
 
-  {% if posts %}
+  {% if writing %}
+  {% set ns.n = ns.n + 1 %}
   <section id="writing" class="page-section">
-    <header class="section-head"><p class="eyebrow">06 / Writing</p><h2>Latest posts</h2></header>
+    <header class="section-head"><p class="eyebrow">{{ "%02d"|format(ns.n) }} / Writing</p><h2>Latest posts</h2></header>
     <div class="grid grid-2">
-      {% for post in posts[:2] %}
-      <article class="card">
-        <p class="meta">{{ post.date.isoformat() }}</p>
-        <h3><a href="/blog/{{ post.slug }}">{{ post.title }}</a></h3>
-        {% if post.summary %}<p>{{ post.summary }}</p>{% endif %}
-      </article>
+      {% for item in writing[:4] %}
+      {{ writing_card(item) }}
       {% endfor %}
     </div>
-    <p><a href="/blog">All posts &rarr;</a></p>
+    {% if not single_page and (writing|length > 4 or posts) %}<p><a href="{{ url_for('blog.blog_list') }}">All posts &rarr;</a></p>{% endif %}
   </section>
   {% endif %}
 

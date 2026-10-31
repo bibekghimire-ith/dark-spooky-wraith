@@ -3,3 +3,4 @@ gunicorn==23.0.0
 PyYAML==6.0.3
 Markdown==3.11
 Pygments==2.21.0
+certifi==2026.10.23

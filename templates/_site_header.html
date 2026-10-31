@@ -1,4 +1,4 @@
-{% set nb = nav_base|default('') %}
+{% set nb = '' if (nav_base|default('')) == '' else url_for('index') %}
 <header class="site-nav no-print">
   <div class="container nav-inner">
     <a class="brand" href="{{ nb }}{{ '#hero' if nb == '' else '' }}" aria-label="{{ data.owner.name }}, home">
@@ -7,14 +7,14 @@
     </a>
     <nav aria-label="Sections">
       {% if data.focus %}<a href="{{ nb }}#about">About</a>{% endif %}
-      {% if data.skills %}<a href="{{ nb }}#tech">Tech</a>{% endif %}
-      {% if data.projects %}<a href="{{ nb }}#projects">Projects</a>{% endif %}
       {% if data.experience %}<a href="{{ nb }}#experience">Experience</a>{% endif %}
-      {% if posts or on_blog %}<a href="/blog"{% if on_blog %} aria-current="page"{% endif %}>Blog</a>{% endif %}
+      {% if data.projects %}<a href="{{ nb }}#projects">Projects</a>{% endif %}
+      {% if data.skills %}<a href="{{ nb }}#tech">Tech</a>{% endif %}
+      {% if not single_page and (writing or posts or on_blog) %}<a href="{{ url_for('blog.blog_list') }}"{% if on_blog %} aria-current="page"{% endif %}>Blog</a>{% endif %}
       <a href="{{ nb }}#contact">Contact</a>
     </nav>
     <div class="nav-actions">
-      <a class="btn btn-sm btn-ghost" href="/cv">CV</a>
+      {% if not single_page %}<a class="btn btn-sm btn-ghost" href="{{ url_for('cv') }}">CV</a>{% endif %}
       <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch colour theme" hidden><span aria-hidden="true">&#9680;</span></button>
     </div>
   </div>

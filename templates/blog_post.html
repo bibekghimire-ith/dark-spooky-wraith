@@ -6,7 +6,7 @@
 {% set on_blog = true %}
 {% block main %}
 <article class="container narrow page-section post">
-  <p class="eyebrow"><a href="/blog">&larr; All posts</a></p>
+  <p class="eyebrow"><a href="{{ url_for('blog.blog_list') }}">&larr; All posts</a></p>
   <h1>{{ post.title }}</h1>
   <p class="meta">{{ post.date.isoformat() }}</p>
   <div class="post-body">{{ post.html }}</div>

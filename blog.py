@@ -105,13 +105,16 @@ def load_posts(directory):
     return sorted(posts, key=lambda p: p["date"], reverse=True)
 
 
-def create_blueprint(posts, data, year):
+def create_blueprint(posts, data, year, writing=None):
+    if writing is None:
+        from external import local_entries
+        writing = local_entries(posts)
     by_slug = {p["slug"]: p for p in posts}
     bp = Blueprint("blog", __name__)
 
     @bp.route("/blog")
     def blog_list():
-        return render_template("blog_list.html", data=data, posts=posts, year=year)
+        return render_template("blog_list.html", data=data, posts=posts, writing=writing, year=year)
 
     @bp.route("/blog/<slug>")
     def blog_post(slug):

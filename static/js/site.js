@@ -23,6 +23,15 @@
     });
   }
 
+  // A link such as #case-my-project opens the case study it points to.
+  function openFromHash() {
+    var target = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    var box = target && (target.tagName === "DETAILS" ? target : target.closest("details"));
+    if (box) box.open = true;
+  }
+  openFromHash();
+  window.addEventListener("hashchange", openFromHash);
+
   // Highlight the nav link of the section in view.
   var links = [].slice.call(document.querySelectorAll('.site-nav nav a[href^="#"]'));
   if (!("IntersectionObserver" in window) || !links.length) return;

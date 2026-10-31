@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_macros.html" import writing_card %}
 {% set page_title = "Blog - " ~ data.owner.name %}
 {% set page_desc = "Notes and write-ups by " ~ data.owner.name %}
 {% set nav_base = "/" %}
@@ -8,12 +9,8 @@
   <p class="eyebrow">Writing</p>
   <h1>Blog</h1>
   <div class="post-list">
-    {% for post in posts %}
-    <article class="card">
-      <p class="meta">{{ post.date.isoformat() }}</p>
-      <h2><a href="/blog/{{ post.slug }}">{{ post.title }}</a></h2>
-      {% if post.summary %}<p>{{ post.summary }}</p>{% endif %}
-    </article>
+    {% for item in writing %}
+    {{ writing_card(item, "h2") }}
     {% else %}
     <p class="muted">No posts yet.</p>
     {% endfor %}

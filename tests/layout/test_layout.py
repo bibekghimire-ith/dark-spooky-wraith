@@ -168,3 +168,80 @@ def test_console_text_is_readable(open_page, scheme):
     page = open_page(1280, color_scheme=scheme)
     for selector in (".console .cmd", ".console .out", ".console-bar"):
         assert page.evaluate(CONTRAST_JS, selector) >= 4.5, selector
+
+
+def test_role_tags_sit_in_a_wrapping_row_not_stacked(open_page):
+    page = open_page(1280)
+    tops = page.evaluate(
+        "[...document.querySelectorAll('#experience .job .chip-list')[0].children]"
+        ".map(e => Math.round(e.getBoundingClientRect().top))"
+    )
+    assert len(tops) == 3 and len(set(tops)) == 1, tops
+
+
+# ---- featured project and case study ----------------------------------------
+
+def test_featured_card_is_wide_and_splits_into_cover_and_text(open_page):
+    page = open_page(1280)
+    page.evaluate("document.querySelector('#projects .project').classList.add('featured')")
+    box = page.evaluate(
+        "(() => {const c = document.querySelector('#projects .featured');"
+        "const g = document.querySelector('.project-grid').getBoundingClientRect();"
+        "const t = c.querySelector('.thumb').getBoundingClientRect();"
+        "const b = c.querySelector('.project-body').getBoundingClientRect();"
+        "return {card: c.getBoundingClientRect().width, grid: g.width, thumbTop: t.top, bodyTop: b.top}})()"
+    )
+    assert abs(box["card"] - box["grid"]) < 2          # spans the full row
+    assert abs(box["thumbTop"] - box["bodyTop"]) < 2   # cover and text sit side by side
+
+
+def test_featured_card_stacks_on_a_phone(open_page):
+    page = open_page(390)
+    page.evaluate("document.querySelector('#projects .project').classList.add('featured')")
+    tops = page.evaluate(
+        "(() => {const c = document.querySelector('#projects .featured');"
+        "return [c.querySelector('.thumb').getBoundingClientRect().top, c.querySelector('.project-body').getBoundingClientRect().top]})()"
+    )
+    assert tops[1] > tops[0] + 20
+    assert page.evaluate("document.documentElement.scrollWidth") <= 390
+
+
+def test_case_study_opens_with_the_keyboard_and_shows_its_text(open_page):
+    page = open_page(1280)
+    summary = page.locator("#projects .case-study summary").first
+    assert not page.locator("#projects .case-study").first.evaluate("e => e.open")
+    summary.focus()
+    page.keyboard.press("Enter")
+    assert page.locator("#projects .case-study").first.evaluate("e => e.open")
+    assert page.locator("#projects .case-study dd").first.is_visible()
+
+
+def test_a_case_study_link_in_the_url_opens_it(open_page):
+    page = open_page(1280, path="/#case-alpha-project")
+    page.wait_for_function("document.querySelector('#case-alpha-project').open === true", timeout=3000)
+
+
+def test_open_case_study_does_not_cause_sideways_scroll(open_page):
+    page = open_page(360)
+    page.locator("#projects .case-study summary").first.click()
+    assert page.evaluate("document.documentElement.scrollWidth") <= 360
+
+
+def test_opening_a_case_study_does_not_stretch_its_neighbour(open_page):
+    page = open_page(1280)
+    heights = lambda: page.evaluate(
+        "[...document.querySelectorAll('#projects .project')].slice(0, 2).map(e => Math.round(e.getBoundingClientRect().height))"
+    )
+    before = heights()
+    page.locator("#projects .case-study summary").first.click()
+    after = heights()
+    assert after[0] > before[0]          # the opened card grows
+    assert after[1] == before[1]         # its neighbour keeps its own height
+
+
+def test_placeholder_banner_has_the_same_height_at_any_card_width(open_page):
+    page = open_page(1280)
+    heights = page.evaluate(
+        "[...document.querySelectorAll('#projects .project:not(.featured) .thumb:has(.project-placeholder)')].map(e => Math.round(e.getBoundingClientRect().height))"
+    )
+    assert heights and len(set(heights)) == 1 and heights[0] <= 100, heights
