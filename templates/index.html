@@ -1,17 +1,11 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ data.owner.name }} - {{ data.owner.title }}</title>
-  <meta name="description" content="{{ data.owner.bio }}">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-        crossorigin="anonymous">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/retro.css') }}">
-</head>
+{% set page_title = data.owner.name ~ " - " ~ data.owner.title %}
+{% set page_desc = data.owner.bio %}
+{% include "_head.html" %}
 <body>
+{% macro ext(url) %}{% if url.startswith(('http://', 'https://')) %} target="_blank" rel="noopener noreferrer"{% endif %}{% endmacro %}
+<a class="skip-link" href="#main">Skip to content</a>
 {% set has_skills = data.skills %}
 {% set has_projects = data.projects %}
 {% set has_experience = data.experience %}
@@ -21,17 +15,18 @@
     {% if has_skills %}<a href="#tech">Tech</a>{% endif %}
     {% if has_projects %}<a href="#projects">Projects</a>{% endif %}
     {% if has_experience %}<a href="#experience">Experience</a>{% endif %}
+    {% if posts %}<a href="/blog">Blog</a>{% endif %}
     <a href="#contact">Contact</a>
   </nav>
 </header>
-<main class="container">
+<main id="main" class="container">
   <section id="hero">
     <div class="panel">
     <h1>{{ data.owner.name }}</h1>
     <p class="title">{{ data.owner.title }}</p>
     <p>{{ data.owner.bio }}</p>
     {% for link in data.social_links or [] %}
-    <a class="btn-retro" href="{{ link.url }}">{{ link.label }}</a>
+    <a class="btn-retro" href="{{ link.url }}"{{ ext(link.url) }}>{{ link.label }}</a>
     {% endfor %}
     </div>
   </section>
@@ -62,7 +57,7 @@
     <article class="project">
       <div class="thumb">
       {% if src %}
-      <img src="{{ src }}" alt="{{ project.title }}" loading="lazy">
+      <img src="{{ src }}" alt="{{ project.title }}" width="640" height="360" loading="lazy" decoding="async">
       {% else %}
       <div class="project-placeholder" role="img" aria-label="{{ project.title }}"></div>
       {% endif %}
@@ -75,8 +70,8 @@
       </ul>
       {% endif %}
       <div class="links">
-      {% if project.demo_link %}<a class="btn-retro" href="{{ project.demo_link }}">Demo</a>{% endif %}
-      {% if project.code_link %}<a class="btn-retro" href="{{ project.code_link }}">Code</a>{% endif %}
+      {% if project.demo_link %}<a class="btn-retro" href="{{ project.demo_link }}"{{ ext(project.demo_link) }}>Demo</a>{% endif %}
+      {% if project.code_link %}<a class="btn-retro" href="{{ project.code_link }}"{{ ext(project.code_link) }}>Code</a>{% endif %}
       </div>
     </article>
     </div>
@@ -105,6 +100,7 @@
 <footer id="contact">
 <div class="container">
   <p><a href="mailto:{{ data.owner.email }}">{{ data.owner.email }}</a></p>
+  <p><a href="/cv">CV (print view)</a></p>
   <p>(c) {{ year }} {{ data.owner.name }}</p>
 </div>
 </footer>

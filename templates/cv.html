@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+{% set page_title = "CV - " ~ data.owner.name %}
+{% set page_desc = data.owner.title ~ " - curriculum vitae" %}
+{% include "_head.html" %}
+<body class="cv">
+<main id="main" class="container">
+  <p class="no-print"><a href="/">&larr; Back to site</a></p>
+  <header class="cv-head">
+    <h1>{{ data.owner.name }}</h1>
+    <p class="title">{{ data.owner.title }}</p>
+    <p>{{ data.owner.bio }}</p>
+    <p>
+      <a href="mailto:{{ data.owner.email }}">{{ data.owner.email }}</a>
+      {% for link in data.social_links or [] %} | <a href="{{ link.url }}">{{ link.label }}</a>{% endfor %}
+    </p>
+  </header>
+
+  {% if data.experience %}
+  <section>
+    <h2>Experience</h2>
+    {% for job in data.experience %}
+    <article class="job">
+      <h3>{{ job.role }}, {{ job.company }} <span class="dates">{{ job.dates }}</span></h3>
+      {% if job.highlights %}<ul>{% for point in job.highlights %}<li>{{ point }}</li>{% endfor %}</ul>{% endif %}
+    </article>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if data.skills %}
+  <section>
+    <h2>Skills</h2>
+    <dl>
+      {% for category, items in data.skills.items() %}
+      <dt>{{ category }}</dt><dd>{{ items | join(", ") }}</dd>
+      {% endfor %}
+    </dl>
+  </section>
+  {% endif %}
+
+  {% if data.projects %}
+  <section>
+    <h2>Projects</h2>
+    {% for project in data.projects %}
+    <article class="job">
+      <h3>{{ project.title }}</h3>
+      <p>{{ project.description }}{% if project.tech_stack %} <em>({{ project.tech_stack | join(", ") }})</em>{% endif %}</p>
+    </article>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if data.education %}
+  <section>
+    <h2>Education</h2>
+    {% for item in data.education %}
+    <p><strong>{{ item.degree }}</strong>, {{ item.school }} <span class="dates">{{ item.dates }}</span></p>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if data.certifications %}
+  <section>
+    <h2>Certifications</h2>
+    <ul>
+      {% for item in data.certifications %}<li>{{ item.name }}, {{ item.issuer }}{% if item.date %} ({{ item.date }}){% endif %}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</main>
+</body>
+</html>

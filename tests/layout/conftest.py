@@ -47,8 +47,8 @@ def open_page(browser, server):
     pages = []
     local_css = os.environ.get("BOOTSTRAP_CSS_FILE")
 
-    def _open(width, height=900):
-        page = browser.new_page(viewport={"width": width, "height": height})
+    def _open(width, height=900, path="/", **context):
+        page = browser.new_page(viewport={"width": width, "height": height}, **context)
         if local_css:
             # A substitute file cannot match the real SRI hash, so drop the
             # attribute from the HTML in this mode only.
@@ -57,12 +57,12 @@ def open_page(browser, server):
                 body = re.sub(r'\s+integrity="[^"]*"', "", response.text())
                 route.fulfill(response=response, body=body)
 
-            page.route(server + "/", _page)
+            page.route(server + path, _page)
             page.route(
                 "**/bootstrap*.css",
                 lambda route: route.fulfill(path=local_css, content_type="text/css"),
             )
-        page.goto(server + "/", wait_until="load")
+        page.goto(server + path, wait_until="load")
         pages.append(page)
         return page
 

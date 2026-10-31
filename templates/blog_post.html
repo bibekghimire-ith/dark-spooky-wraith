@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+{% set page_title = post.title ~ " - " ~ data.owner.name %}
+{% set page_desc = post.summary or post.title %}
+{% set extra_css = "css/pygments.css" %}
+{% include "_head.html" %}
+<body>
+{% include "_site_header.html" %}
+<main id="main" class="container">
+  <article class="post">
+    <h1>{{ post.title }}</h1>
+    <p class="dates">{{ post.date.isoformat() }}</p>
+    <div class="post-body">{{ post.html }}</div>
+    <p><a href="/blog">&larr; All posts</a></p>
+  </article>
+</main>
+{% include "_site_footer.html" %}
+</body>
+</html>

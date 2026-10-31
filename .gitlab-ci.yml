@@ -1,0 +1,38 @@
+# Pipeline: tests on every push; layout and Lighthouse gate merges; smoke test after deploy.
+# Not yet run on a GitLab runner: adjust image tags to what your runners provide.
+stages: [test, layout, lighthouse, smoke]
+
+default:
+  image: python:3.12
+
+test:
+  stage: test
+  script:
+    - pip install -r requirements-dev.txt
+    - python -m pytest -m "not layout"
+
+layout:
+  stage: layout
+  script:
+    - pip install -r requirements-dev.txt
+    - python -m playwright install --with-deps chromium
+    - python -m pytest -m layout
+
+lighthouse:
+  stage: lighthouse
+  script:
+    - apt-get update && apt-get install -y nodejs npm chromium
+    - pip install -r requirements.txt
+    - npm install -g @lhci/cli
+    - CHROME_PATH=/usr/bin/chromium lhci autorun
+  artifacts:
+    when: always
+    paths: [.lighthouseci/]
+
+smoke:
+  stage: smoke
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && $SMOKE_URL'
+  script:
+    - pip install -r requirements-dev.txt
+    - python -m pytest tests/test_deploy.py -k live
