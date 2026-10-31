@@ -1,7 +1,21 @@
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-nav py-2">
-  <nav class="container" aria-label="Site">
-    <a href="/">{{ data.owner.name }}</a>
-    <a href="/blog">Blog</a>
-  </nav>
+{% set nb = nav_base|default('') %}
+<header class="site-nav no-print">
+  <div class="container nav-inner">
+    <a class="brand" href="{{ nb }}{{ '#hero' if nb == '' else '' }}" aria-label="{{ data.owner.name }}, home">
+      <span class="brand-mark" aria-hidden="true">{{ data.owner.name.split()|map('first')|join|upper|truncate(2, True, '') }}</span>
+      <span class="brand-name">{{ data.owner.name }}</span>
+    </a>
+    <nav aria-label="Sections">
+      {% if data.focus %}<a href="{{ nb }}#about">About</a>{% endif %}
+      {% if data.skills %}<a href="{{ nb }}#tech">Tech</a>{% endif %}
+      {% if data.projects %}<a href="{{ nb }}#projects">Projects</a>{% endif %}
+      {% if data.experience %}<a href="{{ nb }}#experience">Experience</a>{% endif %}
+      {% if posts or on_blog %}<a href="/blog"{% if on_blog %} aria-current="page"{% endif %}>Blog</a>{% endif %}
+      <a href="{{ nb }}#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-sm btn-ghost" href="/cv">CV</a>
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch colour theme" hidden><span aria-hidden="true">&#9680;</span></button>
+    </div>
+  </div>
 </header>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% set page_title = "Not found - " ~ data.owner.name %}
+{% set page_desc = "This page does not exist." %}
+{% set nav_base = "/" %}
+{% block main %}
+<section class="container empty-state">
+  <p class="eyebrow">404</p>
+  <h1>Nothing here.</h1>
+  <p class="lead">The page you asked for does not exist or has moved.</p>
+  <p><a class="btn" href="/">Back to the home page</a></p>
+</section>
+{% endblock %}

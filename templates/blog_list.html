@@ -1,24 +1,22 @@
-<!doctype html>
-<html lang="en">
+{% extends "base.html" %}
 {% set page_title = "Blog - " ~ data.owner.name %}
 {% set page_desc = "Notes and write-ups by " ~ data.owner.name %}
-{% include "_head.html" %}
-<body>
-{% include "_site_header.html" %}
-<main id="main" class="container">
-  <section>
-    <h1>Blog</h1>
+{% set nav_base = "/" %}
+{% set on_blog = true %}
+{% block main %}
+<section class="container narrow page-section">
+  <p class="eyebrow">Writing</p>
+  <h1>Blog</h1>
+  <div class="post-list">
     {% for post in posts %}
-    <article class="panel mb-4">
+    <article class="card">
+      <p class="meta">{{ post.date.isoformat() }}</p>
       <h2><a href="/blog/{{ post.slug }}">{{ post.title }}</a></h2>
-      <p class="dates">{{ post.date.isoformat() }}</p>
       {% if post.summary %}<p>{{ post.summary }}</p>{% endif %}
     </article>
     {% else %}
-    <p>No posts yet.</p>
+    <p class="muted">No posts yet.</p>
     {% endfor %}
-  </section>
-</main>
-{% include "_site_footer.html" %}
-</body>
-</html>
+  </div>
+</section>
+{% endblock %}

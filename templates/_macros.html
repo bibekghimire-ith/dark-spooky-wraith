@@ -1,0 +1,2 @@
+{# External links open in a new tab and never leak the opener. #}
+{% macro ext(url) %}{% if url.startswith(('http://', 'https://')) %} target="_blank" rel="noopener noreferrer"{% endif %}{% endmacro %}

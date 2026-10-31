@@ -57,3 +57,11 @@ def test_unusable_image_value_falls_back_to_the_placeholder(full_data, render):
     html = render(full_data)
     assert "secret.png" not in html
     assert 'class="project-placeholder"' in html
+
+
+def test_missing_local_file_falls_back_to_placeholder_when_checking(full_data):
+    client = create_app(full_data, check_images=True).test_client()
+    html = client.get("/").get_data(as_text=True)
+    assert "/static/img/alpha.png" not in html
+    assert 'class="project-placeholder"' in html
+    assert 'src="https://cdn.example.com/beta.png"' in html

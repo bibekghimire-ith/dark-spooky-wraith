@@ -11,6 +11,10 @@ Field names are a contract with templates/index.html (see Portfolio-PRD.md).
                  (for example "img/app.png") or an http(s) URL; the links are optional
   experience     list of {role, company, dates, highlights}; newest first
 
+  hero_console   optional list of text lines for the hero card (lines starting with $ look like commands)
+  stats          optional list of {value, label}; quote values such as "3" so YAML keeps them as text
+  focus          optional list of {title, text} for the "What I do" cards
+  owner extras   optional location, availability, cta_title, cta; projects may add impact
   analytics      optional {script_src, domain}; both set => one analytics script tag
   posts          blog posts live in posts/*.md (see blog.py)
 
@@ -108,6 +112,16 @@ def validate(data):
         _check_link(project.get("demo_link"), f"projects[{i}].demo_link", errors)
         _check_link(project.get("code_link"), f"projects[{i}].code_link", errors)
 
+    for i, stat in enumerate(data.get("stats") or []):
+        if not (isinstance(stat, dict) and _is_text(stat.get("value")) and _is_text(stat.get("label"))):
+            errors.append(f"stats[{i}] needs text value and label (quote numbers, for example \"3\")")
+    for i, item in enumerate(data.get("focus") or []):
+        if not (isinstance(item, dict) and _is_text(item.get("title")) and _is_text(item.get("text"))):
+            errors.append(f"focus[{i}] needs text title and text")
+    console = data.get("hero_console")
+    if console not in (None, "") and not _is_text_list(console):
+        errors.append("hero_console must be a list of text lines")
+
     analytics = data.get("analytics")
     if analytics not in (None, ""):
         if not isinstance(analytics, dict):
@@ -144,8 +158,12 @@ def image_src(value):
     return url_for("static", filename="/".join(parts))
 
 
-def create_app(data=None, posts=None):
-    """Build the Flask app. Bad data stops startup with a message naming the field."""
+def create_app(data=None, posts=None, check_images=False):
+    """Build the Flask app. Bad data stops startup with a message naming the field.
+
+    With check_images=True, a local image_url whose file is missing from static/
+    falls back to the placeholder instead of a broken <img>.
+    """
     data = PORTFOLIO_DATA if data is None else data
     errors = validate(data)
     if errors:
@@ -155,7 +173,16 @@ def create_app(data=None, posts=None):
         posts = load_posts(BASE_DIR / "posts")
 
     app = Flask(__name__)
-    app.jinja_env.globals["image_src"] = image_src
+
+    def card_image(value):
+        src = image_src(value)
+        if src and check_images and not str(value).strip().lower().startswith(("http://", "https://")):
+            rel = value.strip().lstrip("/")
+            if not (Path(app.static_folder) / rel).is_file():
+                return None
+        return src
+
+    app.jinja_env.globals["image_src"] = card_image
     app.register_blueprint(create_blueprint(posts, data, date.today().year))
 
     @app.route("/")
@@ -165,6 +192,10 @@ def create_app(data=None, posts=None):
     @app.route("/cv")
     def cv():
         return render_template("cv.html", data=data, year=date.today().year)
+
+    @app.errorhandler(404)
+    def not_found(_error):
+        return render_template("404.html", data=data, year=date.today().year), 404
 
     @app.route("/healthz")
     def healthz():
@@ -181,7 +212,7 @@ def create_app(data=None, posts=None):
 
 
 PORTFOLIO_DATA = load_content(CONTENT_PATH)
-app = create_app()
+app = create_app(check_images=True)
 
 if __name__ == "__main__":
     app.run(debug=os.environ.get("FLASK_DEBUG") == "1", extra_files=[str(CONTENT_PATH)])

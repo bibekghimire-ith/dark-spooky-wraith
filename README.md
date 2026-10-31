@@ -1,6 +1,6 @@
-# Personal portfolio (Flask + Bootstrap 5, retro theme)
+# Personal portfolio (Flask, "ops console" theme)
 
-A one-page portfolio, a print-friendly CV and a small Markdown blog. All content comes from `content.yaml` and `posts/`; there is no database.
+A one-page portfolio, a print-friendly CV and a small Markdown blog. No framework and no third-party requests: one stylesheet (`static/css/site.css`) and one optional script (`static/js/site.js`, theme toggle and nav highlight). All content comes from `content.yaml` and `posts/`; there is no database.
 
 Needs Python 3.10 or newer.
 
@@ -26,6 +26,16 @@ Open `content.yaml`. Field names are listed in the docstring at the top of `app.
 - A broken file stops the app at startup with a message naming the file, line or field. Fix it and start again.
 - Links must start with `http://`, `https://` or `mailto:`. Empty links are simply not shown.
 - Replace the placeholder email and social links before publishing.
+
+### Home page extras (all optional)
+
+Remove a key to hide its section. Everything below is dummy text drawn from the CV; edit freely.
+
+- `owner.location`, `owner.availability`, `owner.cta_title`, `owner.cta`: hero badge and contact card.
+- `hero_console`: lines in the career.log card (a line starting with `$` is styled as a command).
+- `stats`: `{value, label}` tiles. Quote values such as `"3"`.
+- `focus`: `{title, text}` cards under "What I do".
+- `projects[].impact`: one-line result shown on the project card.
 
 ### Add images
 
@@ -66,15 +76,13 @@ python -m pytest                  # everything
 python -m pytest -m "not layout"  # fast tests only (no browser)
 ```
 
-Browser tests (`tests/layout/`) need Chromium and internet access for Bootstrap:
+Browser tests (`tests/layout/`) need Chromium (the site itself loads nothing from the internet):
 
 ```text
 python -m playwright install chromium
 ```
 
-If Chromium is missing they skip themselves. They check: no sideways scroll at 360, 768 and 1280 px; 1, 2 and 3 project columns; print view; dark mode contrast.
-
-Without internet access, set `BOOTSTRAP_CSS_FILE` to a local copy of Bootstrap 5.3 CSS (the integrity check is skipped in that mode).
+If Chromium is missing they skip themselves. They check: no sideways scroll at 360, 768 and 1280 px; 1 and 2 project columns; sticky nav, theme toggle, scroll highlight; print view; text contrast in light and dark.
 
 ## Deploy
 

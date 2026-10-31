@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+{% include "_head.html" %}
+<body class="{{ body_class|default('') }}">
+<a class="skip-link" href="#main">Skip to content</a>
+{% block header %}{% include "_site_header.html" %}{% endblock %}
+<main id="main">
+{% block main %}{% endblock %}
+</main>
+{% block footer %}{% include "_site_footer.html" %}{% endblock %}
+</body>
+</html>

@@ -65,7 +65,7 @@ def test_project_images_are_lazy_and_sized(render):
 
 def test_stylesheet_has_focus_styles_and_skip_link_rule():
     from pathlib import Path
-    css = (Path(__file__).resolve().parent.parent / "static/css/retro.css").read_text()
+    css = (Path(__file__).resolve().parent.parent / "static/css/site.css").read_text()
     assert ":focus-visible" in css
     assert ".skip-link" in css
     assert "prefers-reduced-motion" in css

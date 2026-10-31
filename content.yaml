@@ -8,6 +8,10 @@ owner:
     and test automation, so I design for reliability, testability and clear documentation from the first
     commit.
   email: your-email@example.com
+  location: Nepal
+  availability: Open to new backend and platform roles  # dummy: edit or remove
+  cta_title: Let's build something reliable.
+  cta: Open to conversations about backend services, data ingestion and test automation.
 social_links:
 - label: GitHub
   url: https://github.com/your-handle
@@ -52,6 +56,7 @@ projects:
 - title: Log Parser Regression Tool
   description: Internal tool that automates regression tests for log parsers, query validation of analytics
     content and application bundle checks. Cut manual testing time by 50%.
+  impact: 50% less manual testing time
   tech_stack:
   - Python
   - Regex
@@ -62,6 +67,7 @@ projects:
 - title: Playwright Test Automation Framework
   description: Standardized API and end-to-end automation framework for internal web applications and
     SIEM plugin integrations, and streamlined QA procedures across teams.
+  impact: One framework shared across teams
   tech_stack:
   - Python
   - Playwright
@@ -72,6 +78,7 @@ projects:
 - title: BDD API Automation Framework
   description: API test framework for a microservices-based lending platform, using a BDD approach so
     component tests are readable by stakeholders.
+  impact: Component tests readable by stakeholders
   tech_stack:
   - Java
   - Cucumber
@@ -82,6 +89,7 @@ projects:
 - title: Traffic Sign Recognition
   description: 'Master''s project: a multilayer perceptron written from scratch in NumPy to classify traffic
     signs from the GTSRB dataset.'
+  impact: Neural network built from scratch, no ML framework
   tech_stack:
   - Python
   - NumPy
@@ -142,3 +150,28 @@ certifications:
 - name: Certified Tester Foundation Level (CTFL)
   issuer: ISTQB
   date: Sep 2022
+# Home page extras (all optional; remove a key to hide its section).
+hero_console:
+- $ whoami
+- bibek - software engineer, backend and data ingestion
+- $ tail career.log
+- '2020  technical writer: documentation with precision'
+- '2021  QA engineer: regex log parsers, parser regression tool'
+- '2023  QA strategy and release sign-off, mentoring'
+- '2025  software engineer: Flask APIs, JWT/OAuth, ingestion'
+stats:
+- value: 6+
+  label: years in software
+- value: 50%
+  label: less manual testing via an internal tool
+- value: '3'
+  label: companies, from docs to backend
+- value: '2'
+  label: certifications (ISTQB, PCAP)
+focus:
+- title: Backend and ingestion
+  text: Python and Flask services, REST APIs and the data ingestion components behind a SIEM platform.
+- title: Quality by design
+  text: Test strategy, Playwright and BDD frameworks and regression tooling, built in from the first commit.
+- title: Secure and documented
+  text: JWT, OAuth and input validation for APIs, plus the clear documentation that makes systems maintainable.

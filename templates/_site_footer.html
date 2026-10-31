@@ -1,6 +1,8 @@
-<footer>
-<div class="container">
-  <p><a href="mailto:{{ data.owner.email }}">{{ data.owner.email }}</a></p>
-  <p>(c) {{ year }} {{ data.owner.name }}</p>
-</div>
+<footer class="site-footer no-print">
+  <div class="container footer-inner">
+    <p>(c) {{ year }} {{ data.owner.name }}</p>
+    <p><a href="mailto:{{ data.owner.email }}">{{ data.owner.email }}</a></p>
+    <p><a href="/cv">CV (print view)</a></p>
+    <p class="footer-top"><a href="#main">Back to top</a></p>
+  </div>
 </footer>

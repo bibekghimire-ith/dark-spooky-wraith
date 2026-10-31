@@ -5,7 +5,9 @@ SRC = "https://stats.example.com/js/script.js"
 
 
 def scripts(html):
-    return re.findall(r"<script\b[^>]*>", html)
+    """Third-party script tags; the site's own static/js file is not analytics."""
+    tags = re.findall(r"<script\b[^>]*>", html)
+    return [t for t in tags if "/static/js/" not in t]
 
 
 def test_no_analytics_key_renders_no_script_tag(render):

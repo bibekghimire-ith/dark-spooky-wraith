@@ -59,5 +59,5 @@ def test_home_page_links_to_the_cv(render):
 
 def test_print_rules_exist_in_the_stylesheet():
     from pathlib import Path
-    css = (Path(__file__).resolve().parent.parent / "static/css/retro.css").read_text()
+    css = (Path(__file__).resolve().parent.parent / "static/css/site.css").read_text()
     assert "@media print" in css and ".no-print" in css

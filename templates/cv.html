@@ -1,14 +1,15 @@
-<!doctype html>
-<html lang="en">
+{% extends "base.html" %}
 {% set page_title = "CV - " ~ data.owner.name %}
 {% set page_desc = data.owner.title ~ " - curriculum vitae" %}
-{% include "_head.html" %}
-<body class="cv">
-<main id="main" class="container">
-  <p class="no-print"><a href="/">&larr; Back to site</a></p>
+{% set body_class = "cv" %}
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block main %}
+<div class="container narrow page-section">
+  <p class="no-print cv-actions"><a href="/">&larr; Back to site</a> <button type="button" class="btn btn-sm" onclick="window.print()">Print / save as PDF</button></p>
   <header class="cv-head">
     <h1>{{ data.owner.name }}</h1>
-    <p class="title">{{ data.owner.title }}</p>
+    <p class="title">{{ data.owner.title }}{% if data.owner.location %} &middot; {{ data.owner.location }}{% endif %}</p>
     <p>{{ data.owner.bio }}</p>
     <p>
       <a href="mailto:{{ data.owner.email }}">{{ data.owner.email }}</a>
@@ -68,6 +69,5 @@
     </ul>
   </section>
   {% endif %}
-</main>
-</body>
-</html>
+</div>
+{% endblock %}
