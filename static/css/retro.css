@@ -1,0 +1,79 @@
+/* Retro / monospace theme. Loaded after Bootstrap so these rules win. */
+:root {
+  --page-bg: #E5E5E5;
+  --panel-bg: #F0F0F0;
+  --ink: #000;
+  --border: 2px solid #000;
+  --shadow: 4px 4px 0 #000;
+  --font: "Courier New", "Lucida Console", monospace;
+}
+
+*, *::before, *::after { border-radius: 0 !important; }
+
+body {
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.5;
+}
+
+h1, h2, h3 { font-family: var(--font); font-weight: 700; }
+h2 { border-bottom: var(--border); padding-bottom: .25rem; margin-bottom: 1.25rem; }
+
+a { color: var(--ink); text-decoration: underline; }
+a:hover, a:focus { background: var(--ink); color: var(--page-bg); }
+
+.site-nav {
+  background: var(--panel-bg);
+  border-bottom: var(--border);
+}
+.site-nav a { margin-right: 1rem; font-weight: 700; }
+
+.panel, .project, .job, .skill-group {
+  background: var(--panel-bg);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+}
+
+.project { height: 100%; display: flex; flex-direction: column; }
+.project .links { margin-top: auto; }
+
+.thumb {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border: var(--border);
+  background: var(--page-bg);
+  margin-bottom: .75rem;
+  overflow: hidden;
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.project-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: repeating-linear-gradient(45deg, #ddd, #ddd 8px, #e8e8e8 8px, #e8e8e8 16px);
+}
+
+.badge-list { list-style: none; padding: 0; margin: 0 0 .75rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+.badge-list li {
+  border: var(--border);
+  background: var(--page-bg);
+  padding: 0 .5rem;
+  font-size: .85rem;
+}
+
+.btn-retro {
+  display: inline-block;
+  border: var(--border);
+  background: var(--page-bg);
+  box-shadow: 2px 2px 0 #000;
+  padding: .15rem .75rem;
+  margin-right: .5rem;
+  text-decoration: none;
+  font-weight: 700;
+}
+.btn-retro:hover, .btn-retro:focus { background: var(--ink); color: var(--page-bg); }
+
+.dates { float: right; font-size: .9rem; }
+section { padding: 2rem 0; overflow-wrap: anywhere; }
+footer { border-top: var(--border); background: var(--panel-bg); padding: 1rem 0; margin-top: 2rem; overflow-wrap: anywhere; }

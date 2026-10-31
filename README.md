@@ -25,4 +25,14 @@ python -m pytest
 
 ## Status
 
-Phases 1 and 2 are done: the app validates its data and renders hero, tech stack, projects, experience and footer from it (unstyled; Bootstrap and the retro theme arrive in Phase 3). Sections, styling, hardening and deployment follow the plan in `Portfolio-Implementation-Plan.md`.
+Phases 1 to 3 are done: the app validates its data, renders every section from it, and is styled with Bootstrap 5.3 plus the retro theme in `static/css/retro.css`. Sections, styling, hardening and deployment follow the plan in `Portfolio-Implementation-Plan.md`.
+
+## Layout tests (browser)
+
+`tests/layout/` uses Playwright and Chromium and needs internet access to load Bootstrap from the CDN. One-time setup:
+
+```text
+python -m playwright install chromium
+```
+
+`python -m pytest` runs everything; `python -m pytest -m "not layout"` skips the browser tests; if Chromium is missing the layout tests skip themselves.
